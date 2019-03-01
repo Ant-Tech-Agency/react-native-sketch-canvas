@@ -12,6 +12,7 @@ import { requestPermissions } from './src/handlePermissions';
 
 export default class RNSketchCanvas extends React.Component {
   static propTypes = {
+    listColorStyle: ViewPropTypes.style,
     containerStyle: ViewPropTypes.style,
     canvasStyle: ViewPropTypes.style,
     onStrokeStart: PropTypes.func,
@@ -62,6 +63,7 @@ export default class RNSketchCanvas extends React.Component {
   };
 
   static defaultProps = {
+    listColorStyle: null,
     containerStyle: null,
     canvasStyle: null,
     onStrokeStart: () => { },
@@ -170,7 +172,7 @@ export default class RNSketchCanvas extends React.Component {
   }
 
   _renderItem = ({ item, index }) => (
-    <TouchableOpacity style={{ marginHorizontal: 2.5 }} onPress={() => {
+    <TouchableOpacity style={{ marginHorizontal: 0 }} onPress={() => {
       if (this.state.color === item.color) {
         const index = this.props.alphlaValues.indexOf(this.state.alpha)
         if (this._alphaStep < 0) {
@@ -225,15 +227,15 @@ export default class RNSketchCanvas extends React.Component {
               </TouchableOpacity>)
             }
 
-            {this.props.undoComponent && (
-              <TouchableOpacity onPress={() => { this.props.onUndoPressed(this.undo()) }}>
-                {this.props.undoComponent}
-              </TouchableOpacity>)
-            }
-
             {this.props.clearComponent && (
               <TouchableOpacity onPress={() => { this.clear(); this.props.onClearPressed() }}>
                 {this.props.clearComponent}
+              </TouchableOpacity>)
+            }
+
+            {this.props.undoComponent && (
+              <TouchableOpacity onPress={() => { this.props.onUndoPressed(this.undo()) }}>
+                {this.props.undoComponent}
               </TouchableOpacity>)
             }
 
@@ -260,7 +262,7 @@ export default class RNSketchCanvas extends React.Component {
           permissionDialogTitle={this.props.permissionDialogTitle}
           permissionDialogMessage={this.props.permissionDialogMessage}
         />
-        <View style={{ flexDirection: 'row' }}>
+        <View style={this.props.listColorStyle}>
           <FlatList
             data={this.props.strokeColors}
             extraData={this.state}
