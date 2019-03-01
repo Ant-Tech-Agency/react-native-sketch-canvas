@@ -85,12 +85,12 @@ export default class RNSketchCanvas extends React.Component {
     strokeWidthComponent: null,
 
     strokeColors: [
-      { color: '#000000' },
       { color: '#FF0000' },
       { color: '#00FFFF' },
       { color: '#0000FF' },
       { color: '#0000A0' },
       { color: '#ADD8E6' },
+      { color: '#000000' },
       { color: '#800080' },
       { color: '#FFFF00' },
       { color: '#00FF00' },
@@ -187,7 +187,7 @@ export default class RNSketchCanvas extends React.Component {
         this._colorChanged = true
       }
     }}>
-      {this.state.color !== item.color && this.props.strokeComponent && this.props.strokeComponent(item.color)}
+      {this.state.color !== item.color && this.props.strokeComponent && this.props.strokeComponent(item.color, index)}
       {this.state.color === item.color && this.props.strokeSelectedComponent && this.props.strokeSelectedComponent(item.color + this.state.alpha, index, this._colorChanged)}
     </TouchableOpacity>
   )
