@@ -255,9 +255,9 @@ export default class RNSketchCanvas extends React.Component {
           onStrokeEnd={this.props.onStrokeEnd}
           user={this.props.user}
           strokeWidth={this.state.strokeWidth}
-          onSketchSaved={(success, path) => this.props.onSketchSaved(success, path)}
+          onSketchSaved={(success, path, isEditImage) => this.props.onSketchSaved(success, path, isEditImage)}
           onPathsChange={this.props.onPathsChange}
-          text={this.props.text}
+          text={this.props.text} 
           localSourceImage={this.props.localSourceImage}
           permissionDialogTitle={this.props.permissionDialogTitle}
           permissionDialogMessage={this.props.permissionDialogMessage}

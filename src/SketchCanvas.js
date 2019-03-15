@@ -78,6 +78,8 @@ class SketchCanvas extends React.Component {
     text: null
   }
 
+  isEditImage = false
+
   constructor(props) {
     super(props)
     this._pathsToProcess = []
@@ -161,6 +163,7 @@ class SketchCanvas extends React.Component {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
+        this.isEditImage = true
         if (!this.props.touchEnabled) return
         const e = evt.nativeEvent
         this._offset = { x: e.pageX - e.locationX, y: e.pageY - e.locationY }
@@ -241,7 +244,7 @@ class SketchCanvas extends React.Component {
           if (e.nativeEvent.hasOwnProperty('pathsUpdate')) {
             this.props.onPathsChange(e.nativeEvent.pathsUpdate)
           } else if (e.nativeEvent.hasOwnProperty('success') && e.nativeEvent.hasOwnProperty('path')) {
-            this.props.onSketchSaved(e.nativeEvent.success, e.nativeEvent.path)
+            this.props.onSketchSaved(e.nativeEvent.success, e.nativeEvent.path, this.isEditImage) 
           } else if (e.nativeEvent.hasOwnProperty('success')) {
             this.props.onSketchSaved(e.nativeEvent.success)
           }
