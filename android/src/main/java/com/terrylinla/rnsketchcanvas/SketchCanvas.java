@@ -66,52 +66,38 @@ public class SketchCanvas extends View {
     }
 
     public boolean openImageFile(String filename, String directory, String mode) {
-        try {
-            if (filename != null) {
-                int res = mContext.getResources().getIdentifier(
-                        filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.')),
-                        "drawable",
-                        mContext.getPackageName());
+        if (filename != null) {
+            int res = mContext.getResources().getIdentifier(
+                    filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.')),
+                    "drawable",
+                    mContext.getPackageName());
 
-                BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                Bitmap bitmap = res == 0 ?
-                        BitmapFactory.decodeFile(new File(filename, directory == null ? "" : directory).toString(), bitmapOptions) :
-                        BitmapFactory.decodeResource(mContext.getResources(), res);
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+            Bitmap bitmap = res == 0 ?
+                    BitmapFactory.decodeFile(new File(filename, directory == null ? "" : directory).toString(), bitmapOptions) :
+                    BitmapFactory.decodeResource(mContext.getResources(), res);
 
-                Bitmap resizedBitmap;
-                if (bitmap.getWidth() == bitmap.getHeight()) {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(90);
-                    resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                } else {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(0);
-                    resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                }
-//                int width = bitmapOptions.outWidth, height = bitmapOptions.outHeight;
-//                if(orientation == ExifInterface.ORIENTATION_ROTATE_90 || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-//                    int temp = width;
-//                    width = height;
-//                    height = temp;
-//                }
-
-                if (resizedBitmap != null) {
-                    mBackgroundImage = resizedBitmap;
-                    mOriginalHeight = resizedBitmap.getHeight();
-                    mOriginalWidth = resizedBitmap.getWidth();
-//                    mOriginalHeight = height;
-//                    mOriginalWidth = width;
-                    mContentMode = mode;
-
-                    invalidateCanvas(true);
-
-                    return true;
-                }
+            Bitmap resizedBitmap;
+            if (bitmap.getWidth() == bitmap.getHeight()) {
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            } else {
+                Matrix matrix = new Matrix();
+                matrix.postRotate(0);
+                resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             }
-            return false;
-        } catch (IOException e) {
-            return false;
+
+            if (resizedBitmap != null) {
+                mBackgroundImage = resizedBitmap;
+                mOriginalHeight = resizedBitmap.getHeight();
+                mOriginalWidth = resizedBitmap.getWidth();
+                mContentMode = mode;
+                invalidateCanvas(true);
+                return true;
+            }
         }
+        return false;
     }
 
     public void setCanvasText(ReadableArray aText) {
