@@ -77,24 +77,26 @@ public class SketchCanvas extends View {
                     BitmapFactory.decodeFile(new File(filename, directory == null ? "" : directory).toString(), bitmapOptions) :
                     BitmapFactory.decodeResource(mContext.getResources(), res);
 
-            Bitmap resizedBitmap;
-            if (bitmap.getWidth() == bitmap.getHeight()) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-                resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            } else {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(0);
-                resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            }
+            if(bitmap != null) {
+                Bitmap resizedBitmap;
+                if (bitmap.getWidth() == bitmap.getHeight()) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                } else {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(0);
+                    resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                }
 
-            if (resizedBitmap != null) {
-                mBackgroundImage = resizedBitmap;
-                mOriginalHeight = resizedBitmap.getHeight();
-                mOriginalWidth = resizedBitmap.getWidth();
-                mContentMode = mode;
-                invalidateCanvas(true);
-                return true;
+                if (resizedBitmap != null) {
+                    mBackgroundImage = resizedBitmap;
+                    mOriginalHeight = resizedBitmap.getHeight();
+                    mOriginalWidth = resizedBitmap.getWidth();
+                    mContentMode = mode;
+                    invalidateCanvas(true);
+                    return true;
+                }
             }
         }
         return false;
