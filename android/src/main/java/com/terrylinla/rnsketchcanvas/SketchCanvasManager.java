@@ -59,7 +59,8 @@ public class SketchCanvasManager extends SimpleViewManager<SketchCanvas> {
             viewContainer.openImageFile(
                 localSourceImage.hasKey("filename") ? localSourceImage.getString("filename") : null,
                 localSourceImage.hasKey("directory") ? localSourceImage.getString("directory") : "",
-                localSourceImage.hasKey("mode") ? localSourceImage.getString("mode") : ""
+                localSourceImage.hasKey("mode") ? localSourceImage.getString("mode") : "",
+                localSourceImage.hasKey("orientation") ? localSourceImage.getString("orientation") : null
             );
         }
     }
