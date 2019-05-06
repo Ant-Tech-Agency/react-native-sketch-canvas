@@ -331,7 +331,7 @@ public class SketchCanvas extends View {
                     onSaved(false, null);
                 }
             } else {
-                Log.    e("SketchCanvas", "Failed to create folder!");
+                Log.e("SketchCanvas", "Failed to create folder!");
                 onSaved(false, null);
             }
         }
