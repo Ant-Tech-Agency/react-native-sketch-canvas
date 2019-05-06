@@ -293,28 +293,53 @@ public class SketchCanvas extends View {
                 event);
     }
 
-    public void save(String format, String folder, String filename, boolean transparent, boolean includeImage, boolean includeText, boolean cropToImageSize) {
-        File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + folder);
-        boolean success = f.exists() ? true : f.mkdirs();
-        if (success) {
-            Bitmap bitmap = createImage(format.equals("png") && transparent, includeImage, includeText, cropToImageSize);
+        private class SaveThread extends Thread {
+        String folder;
+        String format;
+        String filename;
+        boolean transparent;
+        boolean includeImage;
+        boolean includeText;
+        boolean cropToImageSize;
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
-                    File.separator + folder + File.separator + filename + (format.equals("png") ? ".png" : ".jpg"));
-            try {
-                bitmap.compress(
-                        format.equals("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG,
-                        format.equals("png") ? 100 : 90,
-                        new FileOutputStream(file));
-                this.onSaved(true, file.getPath());
-            } catch (Exception e) {
-                e.printStackTrace();
+        SaveThread(String format, String folder, String filename, boolean transparent, boolean includeImage, boolean includeText, boolean cropToImageSize) {
+           this.format = format;
+           this.folder = folder;
+           this.filename = filename;
+           this.transparent = transparent;
+           this.includeImage = includeImage;
+           this.includeText = includeText;
+           this.cropToImageSize = cropToImageSize;
+        }
+
+        @Override
+        public void run() {
+            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + folder);
+            boolean success = f.exists() ? true : f.mkdirs();
+            if (success) {
+                Bitmap bitmap = createImage(format.equals("png") && transparent, includeImage, includeText, cropToImageSize);
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
+                        File.separator + folder + File.separator + filename + ".jpg");
+                try {
+                    bitmap.compress(
+                            Bitmap.CompressFormat.JPEG,
+                            90,
+                            new FileOutputStream(file));
+                    onSaved(true, file.getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onSaved(false, null);
+                }
+            } else {
+                Log.    e("SketchCanvas", "Failed to create folder!");
                 onSaved(false, null);
             }
-        } else {
-            Log.e("SketchCanvas", "Failed to create folder!");
-            onSaved(false, null);
         }
+    }
+
+    public void save(String format, String folder, String filename, boolean transparent, boolean includeImage, boolean includeText, boolean cropToImageSize) {
+       SaveThread saveThread = new SaveThread(format, folder, filename ,transparent, includeImage, includeText, cropToImageSize);
+        saveThread.start();
     }
 
     public String getBase64(String format, boolean transparent, boolean includeImage, boolean includeText, boolean cropToImageSize) {
