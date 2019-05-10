@@ -65,54 +65,78 @@ public class SketchCanvas extends View {
         mContext = context;
     }
 
-    public boolean openImageFile(String filename, String directory, String mode, String orientation) {
-        if (filename != null) {
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
+
+    public boolean openImageFile(String filename, String directory, String mode) {
+        if(filename != null) {
             int res = mContext.getResources().getIdentifier(
                     filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.')),
                     "drawable",
                     mContext.getPackageName());
-
 
             BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
             Bitmap bitmap = res == 0 ?
                     BitmapFactory.decodeFile(new File(filename, directory == null ? "" : directory).toString(), bitmapOptions) :
                     BitmapFactory.decodeResource(mContext.getResources(), res);
 
+            String path = filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.'));
+
+            String tail = "";
+
+            if(filename.contains("Camera")){
+                tail = ".jpg";
+            }
+            else {
+                tail = ".0";
+            }
+
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(path + tail);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientations = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
+
+                Bitmap rotatedBitmap = null;
+                switch(orientations) {
+
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotatedBitmap = rotateImage(bitmap, 90);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotatedBitmap = rotateImage(bitmap, 180);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotatedBitmap = rotateImage(bitmap, 270);
+                        break;
+
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    default:
+                        rotatedBitmap = bitmap;
+                }
 
             if(bitmap != null) {
-                if(orientation == null) {
-                    mBackgroundImage = bitmap;
-                    mOriginalHeight = bitmap.getHeight();
-                    mOriginalWidth = bitmap.getWidth();
-                    mContentMode = mode;
-                    invalidateCanvas(true);
-                    return true;
-                }
+                mBackgroundImage = rotatedBitmap;
+                mOriginalHeight = rotatedBitmap.getHeight();
+                mOriginalWidth = rotatedBitmap.getWidth();
+                mContentMode = mode;
 
-                if(orientation.equals("fix")) {
-                    Bitmap resizedBitmap;
-                    if (bitmap.getWidth() == bitmap.getHeight()) {
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(90);
-                        resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    } else {
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(0);
-                        resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    }
+                invalidateCanvas(true);
 
-                    if (resizedBitmap != null) {
-                        mBackgroundImage = resizedBitmap;
-                        mOriginalHeight = resizedBitmap.getHeight();
-                        mOriginalWidth = resizedBitmap.getWidth();
-                        mContentMode = mode;
-                        invalidateCanvas(true);
-                        return true;
-                    }
-                }
+                return true;
             }
         }
         return false;
+
     }
 
     public void setCanvasText(ReadableArray aText) {
