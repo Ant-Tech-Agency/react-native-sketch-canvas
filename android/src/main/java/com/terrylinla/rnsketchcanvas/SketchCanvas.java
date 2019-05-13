@@ -72,7 +72,7 @@ public class SketchCanvas extends View {
                 matrix, true);
     }
 
-    public boolean openImageFile(String filename, String directory, String mode) {
+    public boolean openImageFile(String filename, String directory, String mode, String Orientation) {
         if(filename != null) {
             int res = mContext.getResources().getIdentifier(
                     filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.')),
