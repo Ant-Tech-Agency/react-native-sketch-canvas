@@ -88,7 +88,7 @@ public class SketchCanvas extends View {
 
             String tail = "";
 
-            if(filename.contains("Camera")){
+            if(filename.contains("Camera") || filename.contains("Pictures")){
                 tail = ".jpg";
             }
             else {
