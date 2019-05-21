@@ -88,11 +88,18 @@ public class SketchCanvas extends View {
 
             String tail = "";
 
-            if(filename.contains("image_manager_disk_cache")){
+            if(filename.contains("image_manager_disk_cache")) {
                   tail = ".0";
             }
             else {
                   tail = ".jpg";
+            }
+
+            File f = new File(path + tail);
+            boolean success = f.isFile() ? true : f.mkdirs();
+
+            if(!success) {
+                tail = ".png";
             }
 
             ExifInterface ei = null;
@@ -101,6 +108,7 @@ public class SketchCanvas extends View {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             int orientations = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_UNDEFINED);
 
