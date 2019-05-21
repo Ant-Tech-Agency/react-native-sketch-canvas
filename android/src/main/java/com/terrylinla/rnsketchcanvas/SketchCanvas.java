@@ -88,11 +88,11 @@ public class SketchCanvas extends View {
 
             String tail = "";
 
-            if(filename.contains("Camera") || filename.contains("Pictures")){
-                tail = ".jpg";
+            if(filename.contains("image_manager_disk_cache")){
+                  tail = ".0";
             }
             else {
-                tail = ".0";
+                  tail = ".jpg";
             }
 
             ExifInterface ei = null;
