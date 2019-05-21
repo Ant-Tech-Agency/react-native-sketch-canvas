@@ -96,7 +96,7 @@ public class SketchCanvas extends View {
             }
 
             File f = new File(path + tail);
-            boolean success = f.isFile() ? true : f.mkdirs();
+            boolean success = f.isFile();
 
             if(!success) {
                 tail = ".png";
