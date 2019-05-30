@@ -72,7 +72,7 @@ public class SketchCanvas extends View {
                 matrix, true);
     }
 
-    public boolean openImageFile(String filename, String directory, String mode, String Orientation) {
+    public boolean openImageFile(String filename, String directory, String mode, int heightDevice, int widthDevice) {
         if(filename != null) {
             int res = mContext.getResources().getIdentifier(
                     filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.')),
@@ -83,6 +83,14 @@ public class SketchCanvas extends View {
             Bitmap bitmap = res == 0 ?
                     BitmapFactory.decodeFile(new File(filename, directory == null ? "" : directory).toString(), bitmapOptions) :
                     BitmapFactory.decodeResource(mContext.getResources(), res);
+
+            int heightXiaomiMI4LTE = 640;
+            int widthXiaomiMI4LTE = 360;
+
+            if(heightDevice == heightXiaomiMI4LTE &&  widthDevice == widthXiaomiMI4LTE && bitmap.getHeight() > 4000 && bitmap.getWidth() > 3000) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 1560, 2080, true);
+            }
+
 
             String path = filename.lastIndexOf('.') == -1 ? filename : filename.substring(0, filename.lastIndexOf('.'));
 
